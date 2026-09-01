@@ -1,15 +1,10 @@
 name: CI Pipeline
 
 on:
-  # Manual trigger for the workflow
   workflow_dispatch:
-
 
 jobs:
 
-  # =========================================================
-  # Backend Tests
-  # =========================================================
   backend-test:
     name: Test ${{ matrix.service }}
     runs-on: ubuntu-latest
@@ -78,10 +73,10 @@ jobs:
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.2
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v5.6.0
         with:
           python-version: "3.12"
 
@@ -97,18 +92,13 @@ jobs:
           pytest -v
 
 
-  # =========================================================
-  # Build and Push Docker Images
-  # =========================================================
   build-and-push:
     name: Build and Push ${{ matrix.image }}
     runs-on: ubuntu-latest
 
-    # All backend tests must pass before this job starts
     needs:
       - backend-test
 
-    # Build and push when code is pushed to main or manually triggered
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
 
     strategy:
@@ -137,10 +127,10 @@ jobs:
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.2
 
       - name: Login to Azure
-        uses: azure/login@v2
+        uses: azure/login@v2.3.0
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
